@@ -1,0 +1,57 @@
+schema: '2.0'
+stages:
+  crawl_data:
+    cmd: python crawler/crawler.py
+    deps:
+    - path: config/crawl_config.yaml
+      hash: md5
+      md5: 91cb4bfc4f019ac07b2a5eebcc27223b
+      size: 118
+    - path: crawler/crawler.py
+      hash: md5
+      md5: 4ed770eca66cffe4eb3cf2cb0c90d76d
+      size: 3548
+  autolabel:
+    cmd: python auto_label/autolabel.py
+    deps:
+    - path: auto_label/autolabel.py
+      hash: md5
+      md5: 291f977e177aa5f91b4320a78bf23b47
+      size: 5054
+    - path: auto_label/yolov8x.pt
+      hash: md5
+      md5: 4c95f9d1dee56fd1f12c80f3be3139a3
+      size: 136890692
+    - path: data/data.yaml
+      hash: md5
+      md5: 013be36be5fa016cd2798eeb7b500f34
+      size: 74
+    - path: data/raw/images
+      hash: md5
+      md5: 726f0f80ed703e03c420e5140206b3d7.dir
+      size: 47707730
+      nfiles: 8
+    outs:
+    - path: data/labeled
+      hash: md5
+      md5: 4502b6c77f786ea4b92da0946ec649a9.dir
+      size: 47708946
+      nfiles: 24
+  augment_data:
+    cmd: python processing/preprocess.py
+    deps:
+    - path: data/labeled/train
+      hash: md5
+      md5: 2f18022ed7e4f195c0c05f01923667bb.dir
+      size: 8773998
+      nfiles: 10
+    - path: processing/preprocess.py
+      hash: md5
+      md5: 8e7f8a0c842841bc3d5084f770eb1772
+      size: 6104
+    outs:
+    - path: data/processed/train
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
