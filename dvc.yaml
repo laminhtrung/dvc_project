@@ -16,7 +16,4 @@ stages:
       - data/labeled/train/images
       - data/labeled/train/labels
     outs:
-      - data/processed/train/images
-      - data/processed/train/labels
-      - data/processed/val
-      - data/processed/test
+       - data/processed/train 
