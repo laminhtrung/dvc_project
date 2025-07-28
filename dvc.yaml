@@ -13,7 +13,7 @@ stages:
     cmd: python processing/preprocess.py
     deps:
       - processing/preprocess.py
-      - data/labeled/train
+      - data/labeled/train/images
       - data/labeled/train/labels
     outs:
       - data/processed/train/images
