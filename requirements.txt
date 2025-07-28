@@ -1,0 +1,5 @@
+ultralytics
+icrawler
+python-dotenv
+pyyaml
+opencv-python
