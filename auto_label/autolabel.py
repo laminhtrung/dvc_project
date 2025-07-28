@@ -117,9 +117,9 @@ def split_dataset(image_paths, label_dir: Path, output_base: Path,
 
 def main():
     parser = argparse.ArgumentParser(description="Auto-label images and split dataset")
-    parser.add_argument("--input_dir", type=str, default="../data/raw/images", help="Folder chứa ảnh input")
-    parser.add_argument("--output_dir", type=str, default="../data/labeled", help="Folder output chứa labels và splits")
-    parser.add_argument("--yaml", type=str, default="../data/data.yaml", help="Đường dẫn tới file data.yaml")
+    parser.add_argument("--input_dir", type=str, default="data/raw/images", help="Folder chứa ảnh input")
+    parser.add_argument("--output_dir", type=str, default="data/labeled", help="Folder output chứa labels và splits")
+    parser.add_argument("--yaml", type=str, default="data/data.yaml", help="Đường dẫn tới file data.yaml")
     parser.add_argument("--model", type=str, default="yolov8x.pt", help="Đường dẫn tới model YOLOv8")
     parser.add_argument("--conf", type=float, default=0.4, help="Confidence threshold")
     args = parser.parse_args()

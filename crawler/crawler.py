@@ -3,11 +3,13 @@ crawlers_local.py
 --------------------------------------------------------------------
 Scrape Google Images or Youtube using `icrawler` or `YoutubevideoCrawler`
 and save directly to local folder `data/raw/`, no MinIO used.
+Now supports config file `crawl_config.yaml`.
 """
 
 import argparse
 import time
 import shutil
+import yaml
 from pathlib import Path
 from typing import List, Optional
 from icrawler.builtin import GoogleImageCrawler
@@ -17,8 +19,9 @@ from youtube_crawler.Youtube_fixed import YoutubevideoCrawler
 load_dotenv()
 
 # === CONSTANTS ===
-RAW_DIR = Path("../data/raw")
+RAW_DIR = Path("root/trunglm8/project/data/raw")
 TEMP_DIR = Path("./temp_download")
+DEFAULT_CONFIG_PATH = "/root/trunglm8/project/config/crawl_config.yaml"
 
 
 def clear_temp_folder():
@@ -43,14 +46,10 @@ def crawl_google_images(query: str,
     clear_temp_folder()
     save_dir.mkdir(parents=True, exist_ok=True)
 
-    # Crawl ảnh vào thư mục tạm
     crawler = GoogleImageCrawler(storage={"root_dir": str(TEMP_DIR)})
     crawler.crawl(keyword=query, max_num=n_imgs, filters=filters or {})
 
-    # Tạo timestamp cho file: ddmm_HHMMSS
     timestamp = time.strftime("%y%d%m_%H%M%S")
-
-    # Bắt đầu đánh số file đích theo số lượng đã có sẵn
     existing_files = list(save_dir.glob("*.jpg"))
     start_idx = len(existing_files)
 
@@ -70,9 +69,6 @@ def crawl_youtube_videos(query: str,
                          n_videos: int,
                          save_dir: Path,
                          filters: Optional[dict] = None) -> List[Path]:
-    """
-    Crawl YouTube videos và lưu vào `save_dir`.
-    """
     print(f"[✓] Crawling YouTube videos: '{query}' into {save_dir}")
     save_dir.mkdir(parents=True, exist_ok=True)
     YoutubevideoCrawler(storage={"root_dir": str(save_dir)}).crawl(
@@ -83,28 +79,31 @@ def crawl_youtube_videos(query: str,
     return list(save_dir.iterdir())
 
 
+def load_config(config_path: str = DEFAULT_CONFIG_PATH) -> dict:
+    with open(config_path, "r") as f:
+        return yaml.safe_load(f)["crawl"]
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Scrape Google Images or YouTube videos and save to local folder"
     )
-    parser.add_argument("--query", required=True,
-                        help="Search keywords")
-    parser.add_argument("--num-image", "-n", type=int, default=50,
-                        help="Number of images/videos to download (default: 50)")
-    parser.add_argument("--type", choices=["images", "videos"], default="images",
-                        help="Choose 'images' or 'videos' (default: images)")
-    parser.add_argument("--save_dir", type=str,
-                        help="Directory to save images or videos")
+    parser.add_argument("--config", type=str, default=DEFAULT_CONFIG_PATH,
+                        help="Path to crawl_config.yaml")
 
     args = parser.parse_args()
+    cfg = load_config(args.config)
 
-    save_path = Path(args.save_dir) if args.save_dir else RAW_DIR / (
-        "images" if args.type == "images" else "videos")
+    query = cfg["query"]
+    num = cfg.get("num_images", 50)
+    crawl_type = cfg.get("type", "images")
+    save_dir = Path(cfg.get("save_dir", RAW_DIR / ("images" if crawl_type == "images" else "videos")))
+    filters = cfg.get("filters", {})
 
-    if args.type == "images":
-        crawl_google_images(args.query, args.num_image, save_path)
+    if crawl_type == "images":
+        crawl_google_images(query, num, save_dir, filters)
     else:
-        crawl_youtube_videos(args.query, args.num_image, save_path)
+        crawl_youtube_videos(query, num, save_dir, filters)
 
 
 if __name__ == "__main__":

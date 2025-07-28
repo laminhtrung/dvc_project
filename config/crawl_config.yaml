@@ -1,0 +1,6 @@
+crawl:
+  query: "orange"
+  num_images: 5
+  type: "images"         # hoặc "videos"
+  save_dir: "../data/raw/images"
+

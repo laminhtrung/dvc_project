@@ -1,19 +1,22 @@
 stages:
-  crawl:
-    cmd: python crawler.py --save_dir data/raw --query "dog and cat" \ --num-image 20 \
-    outs:
-      - data/raw
-
-  label:
-    cmd: python auto_label.py --input_dir data/raw --output_dir data/labeled
+  autolabel:
+    cmd: python auto_label/autolabel.py
     deps:
-      - data/raw
+      - auto_label/autolabel.py
+      - data/raw/images
+      - data/data.yaml
+      - auto_label/yolov8x.pt
     outs:
       - data/labeled
 
-  process:
-    cmd: python process.py --input_dir data/labeled --output_dir data/processed
+  augment_data:
+    cmd: python processing/preprocess.py
     deps:
-      - data/labeled
+      - processing/preprocess.py
+      - data/labeled/train
+      - data/labeled/train/labels
     outs:
-      - data/processed
+      - data/processed/train/images
+      - data/processed/train/labels
+      - data/processed/val
+      - data/processed/test
