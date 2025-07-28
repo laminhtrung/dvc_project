@@ -28,12 +28,35 @@ stages:
       size: 74
     - path: data/raw/images
       hash: md5
-      md5: fc5df05497afd60c6c06282e5acdcc72.dir
-      size: 16320059
-      nfiles: 35
+      md5: 9abf8aebf6df3a4d8ca199dd5fcd6fe0.dir
+      size: 19817304
+      nfiles: 60
     outs:
     - path: data/labeled
       hash: md5
-      md5: 97063f3748eb137bc586c1ec10d9a9ef.dir
-      size: 16331383
-      nfiles: 105
+      md5: 6776071f72876a6a6b052068df88754c.dir
+      size: 19832808
+      nfiles: 180
+  augment_data:
+    cmd: python processing/preprocess.py
+    deps:
+    - path: data/labeled/train/images
+      hash: md5
+      md5: c839e67526af7c6a93fa6c33c3cceeb4.dir
+      size: 17773957
+      nfiles: 42
+    - path: data/labeled/train/labels
+      hash: md5
+      md5: 706847d5d25664561ee97698aa6b44d2.dir
+      size: 5092
+      nfiles: 42
+    - path: processing/preprocess.py
+      hash: md5
+      md5: 9bd9f271f4b0d5fd9be496f694d655c4
+      size: 6067
+    outs:
+    - path: data/processed/train
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
