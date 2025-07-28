@@ -138,7 +138,7 @@ if __name__ == "__main__":
     # 1. Lấy danh sách ảnh đã được augment trước đó
     augmented_stems = set(f.stem.split('_aug')[0] for f in input_images_dir.glob('*_aug*.png'))
 
-# 2. Chỉ chọn ảnh gốc chưa từng được augment
+    # 2. Chỉ chọn ảnh gốc chưa từng được augment
     img_files = [
     f for f in list(input_images_dir.glob('*.jpg')) + list(input_images_dir.glob('*.png'))
     if "_aug" not in f.stem and f.stem not in augmented_stems]

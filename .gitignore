@@ -1,2 +1,5 @@
 auto_label/yolov8x.pt
 yolov8x.pt
+data/raw/images
+data/labeled/
+data/visualized
