@@ -28,28 +28,28 @@ stages:
       size: 74
     - path: data/raw/images
       hash: md5
-      md5: fa718a10c1238acbd288d374dc75f4b2.dir
-      size: 18906503
-      nfiles: 60
+      md5: 996cf3e337df7a7521e2cf0665cafe33.dir
+      size: 1572289
+      nfiles: 5
     outs:
     - path: data/labeled
       hash: md5
-      md5: 9255c9306cf94a5780d9a71b75f3d7fc.dir
-      size: 18922387
-      nfiles: 180
+      md5: faa80737c1b8f56cb2dc4544386c0be9.dir
+      size: 1573353
+      nfiles: 15
   augment_data:
     cmd: python processing/preprocess.py
     deps:
     - path: data/labeled/train/images
       hash: md5
-      md5: 9dba691fb187e3d95a0565208cf2c5e7.dir
-      size: 10058056
-      nfiles: 42
+      md5: 987dc2d9261bd7089865bca392c7441e.dir
+      size: 1489534
+      nfiles: 3
     - path: data/labeled/train/labels
       hash: md5
-      md5: e5184ee9dfe392754b7c4026b644d7ce.dir
-      size: 6118
-      nfiles: 42
+      md5: 336bac2e0df9fecc815f50fd1c2d1e55.dir
+      size: 266
+      nfiles: 3
     - path: processing/preprocess.py
       hash: md5
       md5: b351ac58ad35e6095f66c3ce37088c89
@@ -57,21 +57,21 @@ stages:
     outs:
     - path: data/processed/test
       hash: md5
-      md5: 7d7ab5741317ecbc0f750a3219539f77.dir
-      size: 1332560
-      nfiles: 10
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
     - path: data/processed/train/images
       hash: md5
-      md5: 5ec951558e01a397e88b625611b84c4d.dir
-      size: 43996921
-      nfiles: 70
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
     - path: data/processed/train/labels
       hash: md5
-      md5: 16a1b5ced99ee2e8880d89c185890711.dir
-      size: 13132
-      nfiles: 70
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
     - path: data/processed/val
       hash: md5
-      md5: 4dae4711180b6df8a7be6791bef3107e.dir
-      size: 3218083
-      nfiles: 20
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
