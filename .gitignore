@@ -12,3 +12,9 @@ prometheus-*.tgz
 # Ignore unpacked Prometheus binaries
 prometheus-*/prometheus
 prometheus-*/promtool
+
+# Ignore Prometheus release files
+prometheus-*.tar.gz
+prometheus-*/prometheus
+prometheus-*/promtool
+prometheus-*/
