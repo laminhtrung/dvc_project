@@ -49,13 +49,8 @@ git tag -f "labeled_v$version" -m "Version $version: Labeled data"
 # Step 3: Reproduce augmentation stage
 # ==============================================================================
 echo "🧪 Đang chạy 'augment_data' stage..."
-dvc repro augment_data  # Tự động thực thi stage augment_data từ dvc.yaml
+dvc repro --force augment_data  # Tự động thực thi stage augment_data từ dvc.yaml
 
-# Xoá stage đang track riêng 'images'
-dvc remove augment_data
-
-# Track toàn bộ thư mục
-dvc add data/processed/train
 
 # Commit lại DVC
 git add data/processed/train.dvc .gitignore
@@ -69,14 +64,16 @@ git tag -f "augmented_v$version" -m "Version $version: Full train dir"
 # ==============================================================================
 # Step 4: Push to DVC remote + Git remote
 # ==============================================================================
-dvc remote add -f -d myremote s3://data
-dvc remote modify myremote endpointurl http://localhost:9000
+dvc remote remove myremote
+dvc remote add -f -d myremote s3://data/
+dvc remote modify myremote endpointurl http://0.0.0.0:7868
 dvc remote modify myremote access_key_id minioadmin
 dvc remote modify myremote secret_access_key minioadmin
 
 
+
 echo "⬆️  Đẩy dữ liệu lên DVC remote (MinIO)..."
-dvc push -r minio_remote
+dvc push 
 
 echo "⬆️  Đẩy code + tag lên Git remote..."
 if ! git remote | grep -q "origin"; then

@@ -1,6 +1,6 @@
 crawl:
-  query: "banana"
-  num_images: 10
+  query: "apple"
+  num_images: 5
   type: "images"         # hoặc "videos"
   save_dir: "../data/raw/images"
 

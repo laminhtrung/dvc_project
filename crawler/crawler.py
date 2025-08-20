@@ -15,6 +15,9 @@ from typing import List, Optional
 from icrawler.builtin import GoogleImageCrawler
 from dotenv import load_dotenv
 from youtube_crawler.Youtube_fixed import YoutubevideoCrawler
+import sys
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from logs.log import logger  # 👉 THÊM logger vào đây
 
 load_dotenv()
 
@@ -32,6 +35,7 @@ def clear_temp_folder():
                 f.unlink()
     else:
         TEMP_DIR.mkdir(parents=True, exist_ok=True)
+    logger.info(f"🧹 Cleared temporary folder {TEMP_DIR}")
 
 
 def crawl_google_images(query: str,
@@ -41,7 +45,7 @@ def crawl_google_images(query: str,
     """
     Crawl Google Images vào thư mục tạm, rồi đổi tên và chuyển về `save_dir`.
     """
-    print(f"[✓] Crawling Google Images: '{query}'")
+    logger.info(f"🔍 Crawling Google Images: '{query}' with max {n_imgs} images")
 
     clear_temp_folder()
     save_dir.mkdir(parents=True, exist_ok=True)
@@ -61,7 +65,7 @@ def crawl_google_images(query: str,
         shutil.move(str(img_path), str(new_path))
         final_files.append(new_path)
 
-    print(f"[✓] Saved {len(final_files)} images to {save_dir}")
+    logger.info(f"✅ Saved {len(final_files)} images to {save_dir}")
     return final_files
 
 
@@ -69,19 +73,25 @@ def crawl_youtube_videos(query: str,
                          n_videos: int,
                          save_dir: Path,
                          filters: Optional[dict] = None) -> List[Path]:
-    print(f"[✓] Crawling YouTube videos: '{query}' into {save_dir}")
+    logger.info(f"📺 Crawling YouTube videos: '{query}' into {save_dir}")
     save_dir.mkdir(parents=True, exist_ok=True)
+
     YoutubevideoCrawler(storage={"root_dir": str(save_dir)}).crawl(
         keyword=query,
         max_num=n_videos,
         filters=filters or {}
     )
+
+    logger.info(f"✅ Downloaded YouTube videos to {save_dir}")
     return list(save_dir.iterdir())
 
 
 def load_config(config_path: str = DEFAULT_CONFIG_PATH) -> dict:
+    logger.info(f"📄 Loading crawl config from: {config_path}")
     with open(config_path, "r") as f:
-        return yaml.safe_load(f)["crawl"]
+        config = yaml.safe_load(f)["crawl"]
+    logger.info(f"🔧 Config loaded: {config}")
+    return config
 
 
 def main():
@@ -100,10 +110,13 @@ def main():
     save_dir = Path(cfg.get("save_dir", RAW_DIR / ("images" if crawl_type == "images" else "videos")))
     filters = cfg.get("filters", {})
 
+    logger.info(f"🚀 Start crawling pipeline: query='{query}' type='{crawl_type}' num={num}")
     if crawl_type == "images":
         crawl_google_images(query, num, save_dir, filters)
     else:
         crawl_youtube_videos(query, num, save_dir, filters)
+
+    logger.info("✅ Crawl pipeline completed.")
 
 
 if __name__ == "__main__":

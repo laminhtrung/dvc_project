@@ -1,7 +1,7 @@
 [core]
-    remote = minio_remote
-['remote "minio_remote"']
+    remote = myremote
+['remote "myremote"']
     url = s3://data
-    endpointurl = http://0.0.0.0:7868
+    endpointurl = http://0.0.0.0:9000
     access_key_id = minioadmin
     secret_access_key = minioadmin

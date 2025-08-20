@@ -1,0 +1,7 @@
+2025-07-29 14:55:34,977 - INFO - 📄 Loading crawl config from: /root/trunglm8/project/config/crawl_config.yaml
+2025-07-29 14:55:34,978 - INFO - 🔧 Config loaded: {'query': 'orange', 'num_images': 10, 'type': 'images', 'save_dir': '../data/raw/images'}
+2025-07-29 14:55:34,978 - INFO - 🚀 Start crawling pipeline: query='orange' type='images' num=10
+2025-07-29 14:55:34,978 - INFO - 🔍 Crawling Google Images: 'orange' with max 10 images
+2025-07-29 14:55:34,979 - INFO - 🧹 Cleared temporary folder temp_download
+2025-07-29 14:55:43,990 - INFO - ✅ Saved 10 images to ../data/raw/images
+2025-07-29 14:55:43,990 - INFO - ✅ Crawl pipeline completed.

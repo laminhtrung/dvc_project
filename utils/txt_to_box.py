@@ -81,8 +81,8 @@ def visualize_folder(img_dir: Path, label_dir: Path, output_dir: Path, yaml_path
 
 # ==== Ví dụ sử dụng ====
 if __name__ == "__main__":
-    image_folder = Path("../data/labeled/train/images")
-    label_folder = Path("../data/labeled/train/labels")
+    image_folder = Path("../data/processed/train/images")
+    label_folder = Path("../data/[rocessed/train/labels")
     output_folder = Path("../data/visualized")
     yaml_file = Path("../data/data.yaml")  # Chứa class names
 

@@ -5,7 +5,11 @@ import argparse
 import yaml
 import random
 import shutil
-
+import json
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from analysis.stats import analyze_split
 
 def load_class_mapping(yaml_path: Path) -> dict:
     with open(yaml_path, "r") as f:
@@ -138,6 +142,21 @@ def main():
     # if label_dir.exists():
     #     shutil.rmtree(label_dir)
     #     print(f"[✓] Đã xoá thư mục tạm: {label_dir}")
+    # Step 3: Phân tích thống kê các tập và lưu JSON
+    all_stats = {}
+    for split in ["train", "val", "test"]:
+        stats = analyze_split(output_dir, split)
+        if stats:
+            print(f"\n📊 Stats for {split.upper()}:")
+            for k, v in stats.items():
+                print(f"  {k}: {v}")
+            all_stats[split] = stats
+
+    # Lưu thống kê ra file JSON trong thư mục output_dir/stats.json
+    stats_json_path = output_dir / "stats.json"
+    with open(stats_json_path, "w") as f:
+        json.dump(all_stats, f, indent=2)
+    print(f"\n✅ Đã lưu thống kê vào file: {stats_json_path}")
 
 
 if __name__ == "__main__":

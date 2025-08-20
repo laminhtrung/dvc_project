@@ -3,6 +3,12 @@ from pathlib import Path
 import albumentations as A
 from albumentations.augmentations.dropout.coarse_dropout import CoarseDropout
 import shutil
+import sys
+import os
+import json
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from analysis.stats import analyze_split
 
 def load_image(img_path):
     img = cv2.imread(str(img_path))
@@ -54,7 +60,7 @@ def bbox_to_yolo(bbox, img_width, img_height):
     y_c = ((y1 + y2) / 2) / img_height
     w = (x2 - x1) / img_width
     h = (y2 - y1) / img_height
-    return [cls_id, x_c, y_c, w, h]
+    return [int(cls_id), x_c, y_c, w, h]
 
 def get_augmentation_pipeline():
     return A.Compose([
@@ -77,14 +83,25 @@ def preprocess_image_and_label(img_path, label_path, output_images_dir, output_l
     labels = load_label(label_path)
     labels = check_and_fix_labels(labels)
 
-    if len(labels) == 0:
-        return False  # Không augment nếu không có nhãn hợp lệ
+    # Lưu ảnh gốc và nhãn gốc vào output
+    out_img_path = output_images_dir / img_path.name
+    out_label_path = output_labels_dir / (img_path.stem + '.txt')
 
+    # Chuyển ảnh RGB sang BGR trước khi lưu với cv2
+    cv2.imwrite(str(out_img_path), cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+    save_label(labels, out_label_path)
+
+    # Nếu không có nhãn hợp lệ, không augment thêm nữa
+    if len(labels) == 0:
+        return False
+
+    # Chuẩn bị bbox để augment
     bboxes = [yolo_to_bbox(lab, width, height) for lab in labels]
     category_ids = [b[-1] for b in bboxes]
     for b in bboxes:
         b.pop()  # Loại bỏ class_id trước khi augment
 
+    # Augmentation
     aug = get_augmentation_pipeline()
     augmented = aug(image=img, bboxes=bboxes, category_ids=category_ids)
     img_aug = cv2.cvtColor(augmented['image'], cv2.COLOR_RGB2BGR)
@@ -92,24 +109,22 @@ def preprocess_image_and_label(img_path, label_path, output_images_dir, output_l
     aug_labels = [bbox_to_yolo(list(b) + [cat], width, height)
                   for b, cat in zip(aug_bboxes, augmented['category_ids'])]
 
+    # Lưu ảnh augment và nhãn augment
     aug_img_name = img_path.stem + "_aug" + img_path.suffix
     aug_lbl_name = img_path.stem + "_aug.txt"
-
     aug_img_out = output_images_dir / aug_img_name
     aug_lbl_out = output_labels_dir / aug_lbl_name
-
     cv2.imwrite(str(aug_img_out), img_aug)
     save_label(aug_labels, aug_lbl_out)
 
     return True
 
-def get_already_augmented_stems(images_dir, exts=['.png', '.jpg']):
-    augmented_stems = set()
+def get_all_stems(images_dir, exts=['.png', '.jpg']):
+    stems = set()
     for ext in exts:
-        for f in images_dir.glob(f'*_aug{ext}'):
-            stem = f.stem.split('_aug')[0]
-            augmented_stems.add(stem)
-    return augmented_stems
+        for f in images_dir.glob(f'*{ext}'):
+            stems.add(f.stem)
+    return stems
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
@@ -130,12 +145,13 @@ if __name__ == "__main__":
     output_images_dir.mkdir(parents=True, exist_ok=True)
     output_labels_dir.mkdir(parents=True, exist_ok=True)
 
-    # Lấy danh sách ảnh đã augment rồi
-    augmented_stems = get_already_augmented_stems(input_images_dir, exts=['.png', '.jpg'])
+    # Lấy tất cả các stem (tên file không đuôi) trong output_images_dir (bao gồm ảnh gốc và ảnh augment)
+    output_stems = get_all_stems(output_images_dir, exts=['.png', '.jpg'])
 
+    # Lọc ảnh input: chỉ augment nếu ảnh đó chưa tồn tại trong output (theo stem)
     img_files = [
         f for f in list(input_images_dir.glob('*.jpg')) + list(input_images_dir.glob('*.png'))
-        if "_aug" not in f.stem and f.stem not in augmented_stems
+        if f.stem not in output_stems
     ]
 
     count = 0
@@ -147,6 +163,8 @@ if __name__ == "__main__":
             if saved:
                 count += 1
                 print(f"[✓] Saved augmented: {img_path.name}")
+            else:
+                print(f"[!] No valid labels for {img_path.name}, skipped augmentation.")
         except Exception as e:
             print(f"[!] Error processing {img_path.name}: {e}")
 
@@ -163,3 +181,19 @@ if __name__ == "__main__":
             print(f"[✓] Copied {split} from {src} to {dst}")
         else:
             print(f"[!] Warning: Source folder {src} does not exist. Skipping copy for {split}")
+    
+    print("\n📊 Phân tích dữ liệu sau augmentation:")
+    all_stats = {}
+    for split in ['train', 'val', 'test']:
+        stats = analyze_split(output_base_dir, split)
+        if stats:
+            print(f"\n📂 Stats cho {split.upper()}:")
+            for k, v in stats.items():
+                print(f"  {k}: {v}")
+            all_stats[split] = stats
+
+    # Ghi lại thống kê ra file JSON
+    stats_path = output_base_dir / "stats.json"
+    with open(stats_path, "w") as f:
+        json.dump(all_stats, f, indent=2)
+    print(f"\n✅ Đã lưu thống kê vào: {stats_path}")

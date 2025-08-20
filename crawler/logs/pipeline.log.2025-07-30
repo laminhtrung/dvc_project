@@ -1,0 +1,21 @@
+2025-07-30 16:13:38,472 - INFO - 📄 Loading crawl config from: /root/trunglm8/project/config/crawl_config.yaml
+2025-07-30 16:13:38,473 - INFO - 🔧 Config loaded: {'query': 'banana', 'num_images': 15, 'type': 'images', 'save_dir': '../data/raw/images'}
+2025-07-30 16:13:38,473 - INFO - 🚀 Start crawling pipeline: query='banana' type='images' num=15
+2025-07-30 16:13:38,473 - INFO - 🔍 Crawling Google Images: 'banana' with max 15 images
+2025-07-30 16:13:38,473 - INFO - 🧹 Cleared temporary folder temp_download
+2025-07-30 16:13:52,478 - INFO - ✅ Saved 15 images to ../data/raw/images
+2025-07-30 16:13:52,479 - INFO - ✅ Crawl pipeline completed.
+2025-07-30 16:19:56,126 - INFO - 📄 Loading crawl config from: /root/trunglm8/project/config/crawl_config.yaml
+2025-07-30 16:19:56,127 - INFO - 🔧 Config loaded: {'query': 'apple', 'num_images': 25, 'type': 'images', 'save_dir': '../data/raw/images'}
+2025-07-30 16:19:56,127 - INFO - 🚀 Start crawling pipeline: query='apple' type='images' num=25
+2025-07-30 16:19:56,127 - INFO - 🔍 Crawling Google Images: 'apple' with max 25 images
+2025-07-30 16:19:56,127 - INFO - 🧹 Cleared temporary folder temp_download
+2025-07-30 16:20:15,132 - INFO - ✅ Saved 25 images to ../data/raw/images
+2025-07-30 16:20:15,132 - INFO - ✅ Crawl pipeline completed.
+2025-07-30 16:27:18,910 - INFO - 📄 Loading crawl config from: /root/trunglm8/project/config/crawl_config.yaml
+2025-07-30 16:27:18,911 - INFO - 🔧 Config loaded: {'query': 'apple', 'num_images': 25, 'type': 'images', 'save_dir': '../data/raw/images'}
+2025-07-30 16:27:18,911 - INFO - 🚀 Start crawling pipeline: query='apple' type='images' num=25
+2025-07-30 16:27:18,911 - INFO - 🔍 Crawling Google Images: 'apple' with max 25 images
+2025-07-30 16:27:18,911 - INFO - 🧹 Cleared temporary folder temp_download
+2025-07-30 16:27:35,916 - INFO - ✅ Saved 25 images to ../data/raw/images
+2025-07-30 16:27:35,916 - INFO - ✅ Crawl pipeline completed.
