@@ -4,3 +4,11 @@ data/raw/images/
 data/labeled/
 data/visualized/.dvc/cache/
 .dvc/cache/
+# Ignore Prometheus release files
+prometheus-*.tar.gz
+prometheus-*.zip
+prometheus-*.tgz
+
+# Ignore unpacked Prometheus binaries
+prometheus-*/prometheus
+prometheus-*/promtool
