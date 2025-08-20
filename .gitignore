@@ -3,3 +3,4 @@ yolov8x.pt
 data/raw/images/
 data/labeled/
 data/visualized/.dvc/cache/
+.dvc/cache/
